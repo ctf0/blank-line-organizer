@@ -1,84 +1,88 @@
 {
-  "name": "blank-line-organizer",
-  "displayName": "Blank Line Organizer",
-  "description": "Removes unnecessary blank lines and adds if needed",
-  "version": "0.1.5",
-  "publisher": "rintoj",
-  "icon": "images/icon.png",
-  "engines": {
-    "vscode": "^1.0.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rintoj/blank-line-organizer.git"
-  },
-  "activationEvents": [
-    "onCommand:blankLine.remove",
-    "*"
-  ],
-  "main": "./out/src/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "blankLine.process",
-        "title": "Remove blank lines"
-      }
+    "name": "blank-line-organizer",
+    "displayName": "Blank Line Organizer",
+    "description": "Removes unnecessary blank lines and adds if needed",
+    "version": "0.0.1",
+    "publisher": "ctf0",
+    "icon": "images/icon.png",
+    "engines": {
+        "vscode": "^1.41.0"
+    },
+    "categories": [
+        "Other"
     ],
-    "keybindings": [
-      {
-        "command": "blankLine.process",
-        "title": "Remove blank lines",
-        "key": "ctrl+;",
-        "mac": "cmd+;"
-      }
+    "keywords": [
+        "Empty Line",
+        "Blank Line",
+        "New Line",
+        "Formatter",
+        "Remover"
     ],
-    "configuration": {
-      "type": "object",
-      "title": "Configuration for blankLine",
-      "properties": {
-        "blankLine.keepOneEmptyLine": {
-          "type": "boolean",
-          "default": true,
-          "description": "If set to true removes all consecutive blank lines, except one."
+    "repository": "https://github.com/ctf0/blank-line-organizer",
+    "activationEvents": [
+        "onCommand:blankLine.process"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "blankLine.process",
+                "title": "Remove Blank Lines"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "blankLine.process",
+                    "when": "editorIsOpen",
+                    "group": "1_modification"
+                }
+            ],
+            "commandPalette": [
+                {
+                    "command": "blankLine.process",
+                    "when": "editorIsOpen"
+                }
+            ]
         },
-        "blankLine.triggerOnSave": {
-          "type": "boolean",
-          "default": true,
-          "description": "If set to true, the command will be triggered on save."
-        },
-        "blankLine.languageIds": {
-          "type": "array",
-          "default": [
-            "javascript",
-            "javascriptreact",
-            "typescript",
-            "typescriptreact",
-            "json",
-            "css",
-            "scss"
-          ],
-          "description": "List of languages to be processed"
+        "configuration": {
+            "type": "object",
+            "title": "Configuration for blankLine",
+            "properties": {
+                "blankLine.keepOneEmptyLine": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If set to true removes all consecutive blank lines, except one."
+                },
+                "blankLine.languageIds": {
+                    "type": "array",
+                    "default": [
+                        "javascript",
+                        "javascriptreact",
+                        "typescript",
+                        "typescriptreact",
+                        "json",
+                        "css",
+                        "scss"
+                    ],
+                    "uniqueItems": true,
+                    "description": "List of languages to be processed"
+                }
+            }
         }
-      }
+    },
+    "scripts": {
+        "test": "node ./test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.1",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.11.7",
+        "@types/vscode": "^1.41.0",
+        "eslint": "^6.6.0",
+        "glob": "^7.1.5",
+        "mocha": "^6.2.2",
+        "typescript": "^3.6.4",
+        "vscode-test": "^1.2.2"
     }
-  },
-  "keywords": [
-    "Empty Line",
-    "Blank Line",
-    "New Line",
-    "Formatter",
-    "Remover"
-  ],
-  "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
-  },
-  "devDependencies": {
-    "typescript": "^1.8.5",
-    "vscode": "^0.11.0"
-  }
 }

@@ -7,3 +7,7 @@
 ## 0.0.2
 
 - update rdme
+
+## 0.0.3
+
+- remove first lines in doc as well "if any"

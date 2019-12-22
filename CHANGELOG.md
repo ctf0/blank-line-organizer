@@ -11,3 +11,7 @@
 ## 0.0.3
 
 - remove first lines in doc as well "if any"
+
+## 0.0.4
+
+- remove msg

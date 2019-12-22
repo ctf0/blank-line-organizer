@@ -1,3 +1,4 @@
+const { EOL } = require('os')
 const vscode = require('vscode')
 let config
 
@@ -32,8 +33,7 @@ async function applyReplacements() {
     let editor = vscode.window.activeTextEditor
     let doc = editor.document
     let txt = doc.getText()
-    let regex = new RegExp(/\n{3,}/, 'gi')
-    let changesMade = false
+    let regex = new RegExp(`${EOL}{3,}`, 'gi')
 
     if (isValidLanguage(doc.languageId)) {
         // remove other
@@ -44,7 +44,6 @@ async function applyReplacements() {
             )
 
             await editor.edit((edit) => edit.replace(fullRange, replaceTxt(txt, regex)))
-            changesMade = true
         }
 
         // remove starting empty lines
@@ -54,18 +53,13 @@ async function applyReplacements() {
 
             if (line.isEmptyOrWhitespace) {
                 emptyLines.push(new vscode.Selection(line.range.start, line.range.end))
-            } else if (index == 0) {
+            } else if (index === 0) {
                 break
             }
         }
         if (emptyLines.length) {
             editor.selections = emptyLines
             await vscode.commands.executeCommand('editor.action.deleteLines')
-            changesMade = true
-        }
-
-        if (changesMade) {
-            return vscode.window.showInformationMessage('Blank Line Organizer: all done')
         }
     }
 }
@@ -90,7 +84,7 @@ function needChanges(txt, regex) {
 }
 
 function replaceTxt(txt, regex) {
-    return txt.replace(regex, config.keepOneEmptyLine ? '\n\n' : '\n')
+    return txt.replace(regex, config.keepOneEmptyLine ? `${EOL}${EOL}` : EOL)
 }
 
 exports.activate = activate

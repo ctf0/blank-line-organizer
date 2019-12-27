@@ -32,35 +32,37 @@ async function getConfig() {
 async function applyReplacements() {
     let editor = vscode.window.activeTextEditor
     let doc = editor.document
+
+    let range = new vscode.Range(
+        new vscode.Position(0, 0),
+        new vscode.Position(doc.lineCount, 0)
+    )
     let txt = doc.getText()
-    let regex = new RegExp(`${EOL}{3,}`, 'gi')
 
     if (isValidLanguage(doc.languageId)) {
-        // remove other
-        if (needChanges(txt, regex)) {
-            let fullRange = new vscode.Range(
-                doc.positionAt(0),
-                doc.positionAt(txt.length - 1)
-            )
+        // start of doc
+        txt = doc.getText()
 
-            await editor.edit((edit) => edit.replace(fullRange, replaceTxt(txt, regex)))
-        }
+        return editor.edit((edit) => edit.replace(
+            range,
+            replaceTxt(txt, new RegExp(`^${EOL}+`, 'm'), true)
+        )).then(() => {
+            // empty space + new line
+            txt = doc.getText()
 
-        // remove starting empty lines
-        let emptyLines = []
-        for (let index = 0; index < 2; index++) {
-            let line = await doc.lineAt(index)
+            editor.edit((edit) => edit.replace(
+                range,
+                replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true)
+            )).then(() => {
+                // consecutive lines
+                txt = vscode.window.activeTextEditor.document.getText()
 
-            if (line.isEmptyOrWhitespace) {
-                emptyLines.push(new vscode.Selection(line.range.start, line.range.end))
-            } else if (index === 0) {
-                break
-            }
-        }
-        if (emptyLines.length) {
-            editor.selections = emptyLines
-            await vscode.commands.executeCommand('editor.action.deleteLines')
-        }
+                editor.edit((edit) => edit.replace(
+                    range,
+                    replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
+                ))
+            })
+        })
     }
 }
 
@@ -79,12 +81,10 @@ function isValidLanguage(languageId) {
     return false
 }
 
-function needChanges(txt, regex) {
-    return regex.test(txt)
-}
-
-function replaceTxt(txt, regex) {
-    return txt.replace(regex, config.keepOneEmptyLine ? `${EOL}${EOL}` : EOL)
+function replaceTxt(txt, regex, all = false) {
+    return all
+        ? txt.replace(regex, '')
+        : txt.replace(regex, config.keepOneEmptyLine ? `${EOL}${EOL}` : EOL)
 }
 
 exports.activate = activate

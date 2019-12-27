@@ -43,24 +43,33 @@ async function applyReplacements() {
         // start of doc
         txt = doc.getText()
 
-        return editor.edit((edit) => edit.replace(
-            range,
-            replaceTxt(txt, new RegExp(`^${EOL}+`, 'm'), true)
-        )).then(() => {
+        return editor.edit(
+            (edit) => edit.replace(
+                range,
+                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
+            ),
+            { undoStopBefore: false, undoStopAfter: false }
+        ).then(() => {
             // empty space + new line
             txt = doc.getText()
 
-            editor.edit((edit) => edit.replace(
-                range,
-                replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true)
-            )).then(() => {
+            editor.edit(
+                (edit) => edit.replace(
+                    range,
+                    replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true, true)
+                ),
+                { undoStopBefore: false, undoStopAfter: false }
+            ).then(() => {
                 // consecutive lines
                 txt = vscode.window.activeTextEditor.document.getText()
 
-                editor.edit((edit) => edit.replace(
-                    range,
-                    replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
-                ))
+                editor.edit(
+                    (edit) => edit.replace(
+                        range,
+                        replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
+                    ),
+                    { undoStopBefore: false, undoStopAfter: false }
+                )
             })
         })
     }
@@ -81,9 +90,9 @@ function isValidLanguage(languageId) {
     return false
 }
 
-function replaceTxt(txt, regex, all = false) {
+function replaceTxt(txt, regex, all = false, addNewLine = false) {
     return all
-        ? txt.replace(regex, '')
+        ? txt.replace(regex, addNewLine ? EOL : '')
         : txt.replace(regex, config.keepOneEmptyLine ? `${EOL}${EOL}` : EOL)
 }
 

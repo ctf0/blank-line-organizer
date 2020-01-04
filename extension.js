@@ -1,18 +1,18 @@
 const { EOL } = require('os')
 const vscode = require('vscode')
-let config
+let config = {}
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {
     // initialize configuration
-    readConfig()
+    await readConfig()
 
     // reload configuration on change
-    vscode.workspace.onDidChangeConfiguration((e) => {
+    vscode.workspace.onDidChangeConfiguration(async (e) => {
         if (e.affectsConfiguration('blankLine')) {
-            readConfig()
+            await readConfig()
         }
     })
 
@@ -22,11 +22,7 @@ function activate(context) {
 }
 
 async function readConfig() {
-    config = await getConfig()
-}
-
-async function getConfig() {
-    return vscode.workspace.getConfiguration('blankLine')
+    return config = await vscode.workspace.getConfiguration('blankLine')
 }
 
 async function applyReplacements() {
@@ -40,18 +36,15 @@ async function applyReplacements() {
     let txt = doc.getText()
 
     if (isValidLanguage(doc.languageId)) {
-        // start of doc
-        txt = doc.getText()
-
         return editor.edit(
             (edit) => edit.replace(
                 range,
-                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
+                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'gm'), true)
             ),
             { undoStopBefore: false, undoStopAfter: false }
         ).then(() => {
             // empty space + new line
-            txt = doc.getText()
+            txt = vscode.window.activeTextEditor.document.getText()
 
             editor.edit(
                 (edit) => edit.replace(

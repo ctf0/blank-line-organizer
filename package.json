@@ -56,6 +56,9 @@
                 },
                 "blankLine.languageIds": {
                     "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "default": [
                         "javascript",
                         "javascriptreact",

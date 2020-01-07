@@ -2,7 +2,7 @@
     "name": "blank-line-organizer",
     "displayName": "Blank Line Organizer",
     "description": "Removes unnecessary blank lines and adds if needed",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "publisher": "ctf0",
     "icon": "images/icon.png",
     "engines": {
@@ -47,7 +47,7 @@
         },
         "configuration": {
             "type": "object",
-            "title": "Configuration for blankLine",
+            "title": "blankLine",
             "properties": {
                 "blankLine.keepOneEmptyLine": {
                     "type": "boolean",

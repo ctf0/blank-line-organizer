@@ -39,7 +39,7 @@ async function applyReplacements() {
         return editor.edit(
             (edit) => edit.replace(
                 range,
-                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'gm'), true)
+                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
             ),
             { undoStopBefore: false, undoStopAfter: false }
         ).then(() => {

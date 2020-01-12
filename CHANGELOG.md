@@ -21,3 +21,7 @@
 - cleanup
 - remove lines with spaces only too
 - better handling for start of doc empty lines
+
+## 0.0.9
+
+- correction for 1st empty lines check & better replace

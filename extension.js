@@ -29,42 +29,20 @@ async function applyReplacements() {
     let editor = vscode.window.activeTextEditor
     let doc = editor.document
 
-    let range = new vscode.Range(
-        new vscode.Position(0, 0),
-        new vscode.Position(doc.lineCount, 0)
-    )
+    let range = new vscode.Range(0, 0, doc.lineCount, 0)
     let txt = doc.getText()
 
     if (isValidLanguage(doc.languageId)) {
+        if (!doc.getText(new vscode.Range(0, 0, 3, 0)).match(/^\S/)) {
+            txt = replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
+        }
+        txt = replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true, true)
+        txt = replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
+
         return editor.edit(
-            (edit) => edit.replace(
-                range,
-                replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
-            ),
+            (edit) => edit.replace(range, txt),
             { undoStopBefore: false, undoStopAfter: false }
-        ).then(() => {
-            // empty space + new line
-            txt = vscode.window.activeTextEditor.document.getText()
-
-            editor.edit(
-                (edit) => edit.replace(
-                    range,
-                    replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true, true)
-                ),
-                { undoStopBefore: false, undoStopAfter: false }
-            ).then(() => {
-                // consecutive lines
-                txt = vscode.window.activeTextEditor.document.getText()
-
-                editor.edit(
-                    (edit) => edit.replace(
-                        range,
-                        replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
-                    ),
-                    { undoStopBefore: false, undoStopAfter: false }
-                )
-            })
-        })
+        )
     }
 }
 

@@ -1,12 +1,12 @@
-const { EOL } = require('os')
 const vscode = require('vscode')
+const { EOL } = require('os')
+
 let config = {}
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-    // initialize configuration
     await readConfig()
 
     // reload configuration on change
@@ -16,16 +16,14 @@ async function activate(context) {
         }
     })
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand('blankLine.process', (e) => applyReplacements())
-    )
+    context.subscriptions.push(vscode.commands.registerCommand('blankLine.process', applyReplacements))
 }
 
 async function readConfig() {
     return config = await vscode.workspace.getConfiguration('blankLine')
 }
 
-async function applyReplacements() {
+async function applyReplacements(e) {
     let editor = vscode.window.activeTextEditor
     let doc = editor.document
 

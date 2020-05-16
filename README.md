@@ -16,4 +16,4 @@ based on https://github.com/rintoj/blank-line-organizer + cleanups
 
 ### Notes
 
-- instead of going through the document line by line to check for emptiness, we use simple regex to remove what dont need "much faster & more performant"
+- instead of going through the document line by line to check for emptiness, we use simple regex to remove what we dont need "much faster & more performant"

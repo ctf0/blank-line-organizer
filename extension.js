@@ -1,5 +1,5 @@
 const vscode = require('vscode')
-const { EOL } = require('os')
+const {EOL} = require('os')
 
 let config = {}
 
@@ -25,21 +25,21 @@ async function readConfig() {
 
 async function applyReplacements(e) {
     let editor = vscode.window.activeTextEditor
-    let doc = editor.document
+    let {document} = editor
 
-    let range = new vscode.Range(0, 0, doc.lineCount, 0)
-    let txt = doc.getText()
+    if (isValidLanguage(document.languageId)) {
+        let txt = document.getText()
 
-    if (isValidLanguage(doc.languageId)) {
-        if (!doc.getText(new vscode.Range(0, 0, 3, 0)).match(/^\S/)) {
+        if (!document.getText(new vscode.Range(0, 0, 3, 0)).match(/^\S/)) {
             txt = replaceTxt(txt, new RegExp(`^${EOL}{2,}`, 'm'), true)
         }
+
         txt = replaceTxt(txt, new RegExp(`^ {2,}${EOL}`, 'gm'), true, true)
         txt = replaceTxt(txt, new RegExp(`${EOL}{3,}`, 'gm'))
 
-        return editor.edit(
-            (edit) => edit.replace(range, txt),
-            { undoStopBefore: false, undoStopAfter: false }
+        await editor.edit(
+            (edit) => edit.replace(new vscode.Range(0, 0, document.lineCount, 0), txt),
+            {undoStopBefore: false, undoStopAfter: false}
         )
     }
 }
